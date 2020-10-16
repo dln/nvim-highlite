@@ -92,29 +92,29 @@ local white       = {'#ffffff', 15,  'white'}
 local tan = {'#f4c069', 180, 'darkyellow'}
 
 local red       = {'#ee4a59', 196, 'red'}
-local red_dark  = {'#a80000', 124, 'darkred'}
-local red_light = {'#ff4090', 203, 'red'}
+local red_dark  = {'#b71c1c', 124, 'darkred'}
+local red_light = {'#FF8A65', 203, 'red'}
 
 local orange       = {'#ff8900', 208, 'darkyellow'}
-local orange_light = {'#f0af00', 214, 'yellow'}
+local orange_light = {'#FFECB3', 214, 'yellow'}
 
 local yellow = {'#f0df33', 220, 'yellow'}
 
 local green_dark  = {'#50de60', 83, 'darkgreen'}
-local green       = {'#77ff00', 72, 'green'}
+local green       = {'#9CCC65', 72, 'green'}
 local green_light = {'#a0ff70', 72, 'green'}
 
 local blue     = {'#7090ff', 63, 'darkblue'}
-local cyan     = {'#33efff', 87, 'cyan'}
+local cyan     = {'#00BCD4', 87, 'cyan'}
 local ice      = {'#49a0f0', 63, 'cyan'}
 local teal     = {'#00d0c0', 38, 'cyan'}
 local turqoise = {'#2bff99', 33, 'blue'}
 
-local magenta      = {'#d5508f', 126, 'magenta'}
+local magenta      = {'#3F51B5', 126, 'magenta'}
 local magenta_dark = {'#bb0099', 126, 'darkmagenta'}
 local pink         = {'#ffa6ff', 162, 'magenta'}
 local pink_light   = {'#ffb7b7', 38,  'white'}
-local purple       = {'#cf55f0', 129, 'magenta'}
+local purple       = {'#9FA8DA', 129, 'magenta'}
 local purple_light = {'#af60af', 63,  'magenta'}
 
 --[[ Step 4: highlights
@@ -216,14 +216,14 @@ local highlight_group_normal = {bg=black, fg=gray_light}
 -- This is where the rest of your highlights should go.
 local highlight_groups = {
 	--[[ 4.1. Text Analysis ]]
-	Comment     = {fg=gray, style='italic'},
+	Comment     = {fg=orange_light, style='bold,italic'},
 	NonText     = {fg=gray_darker},
 	EndOfBuffer = 'NonText',
 	Whitespace  = 'NonText',
 
 	--[[ 4.1.1. Literals]]
 	Constant  = {fg=orange_light},
-	String    = {fg=green},
+	String    = {fg=green, style='italic'},
 	Character = {fg=red_light},
 	Number    = {fg=pink_light},
 	Boolean   = {fg=yellow},
@@ -231,7 +231,8 @@ local highlight_groups = {
 
 	--[[ 4.1.2. Identifiers]]
 	Identifier = {fg=FG},
-	Function   = {fg=purple},
+	-- Function   = {fg=purple, style={'undercurl', color=red}},
+	Function   = {fg=purple, style='bold'},
 
 	--[[ 4.1.3. Syntax]]
 	Statement   = {fg=ice},
@@ -268,7 +269,8 @@ local highlight_groups = {
 	--[[ 4.1.7. Help Syntax]]
 	Underlined        = {fg=turqoise, style='underline'},
 	Ignore            = {fg=gray},
-	Error             = {bg=red_dark, fg=white, style='bold'},
+	-- Error             = {bg=red_dark, fg=orange_light, style='italic'},
+	Error             = {bg={"#312121"}, fg=red, style='italic'},
 	Todo              = {fg=yellow,   style={'bold', 'underline'}},
 	helpHyperTextJump = 'Underlined',
 	helpSpecial       = 'Function',
@@ -292,11 +294,11 @@ local highlight_groups = {
 
 	--[[ 4.2.3. Conditional Line Highlighting]]
 	--Conceal={}
-	CursorLine      = {bg=gray_dark},
-	CursorLineNr    = {bg=gray_dark, fg=pink},
+	CursorLine      = {bg={"#2a2a2a"}},
+	CursorLineNr    = {bg=gray_dark, fg=grey},
 	debugBreakpoint = 'ErrorMsg',
 	debugPC         = 'ColorColumn',
-	LineNr          = {fg=gray},
+	LineNr          = {fg=gray_darker},
 	QuickFixLine    = {bg=gray_darker},
 	Visual          = {style='inverse'},
 	VisualNOS       = {bg=gray_darker},
@@ -447,6 +449,7 @@ local highlight_groups = {
 	goPredefinedIdentifiers = 'Constant',
 	goReceiver              = 'goBlock',
 	goReceiverType          = 'goTypeName',
+	goSameId                = {bg={"#263238"}},
 	goSimpleParams          = 'goBlock',
 	goType                  = 'Type',
 	goTypeConstructor       = 'goFunction',
