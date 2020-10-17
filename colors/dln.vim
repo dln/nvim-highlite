@@ -82,7 +82,7 @@ vim.g.colors_name = 'dln'
 	NOTE: |Replace-mode| will probably be useful here.
 ]]
 
-local black       = {'#202020', 0,   'black'}
+local black       = {'#171717', 0,   'black'}
 local gray        = {'#808080', 244, 'gray'}
 local gray_dark   = {'#353535', 236, 'darkgrey'}
 local gray_darker = {'#505050', 244, 'gray'}
