@@ -1,4 +1,3 @@
---[[ NOTHING INSIDE THIS FILE NEEDS TO BE EDITED BY THE USER. ]]
 local vim = vim
 
 -- Clear the highlighting.
@@ -10,31 +9,17 @@ vim.g.indent_guides_auto_colors = 0
 -- If the syntax has been enabled, reset it.
 if vim.fn.exists('syntax_on') then vim.cmd('syntax reset') end
 
--- Determine which set of colors to use.
-local using_hex_or_256 = tonumber(vim.o.t_Co) >= 256
-	or vim.o.termguicolors
-	or vim.fn.has('gui_running')
-	or string.find(vim.fn.expand('$TERM'), '256')
-
--- If we aren't using the hex and 256 colorset, then set the &t_Co variable to 16.
-if not using_hex_or_256 then vim.o.t_Co = 16 end
-
 -- These are constants for the indexes in the colors that were defined before.
-local PALETTE_ANSI = 3
-local PALETTE_256  = 2
-local PALETTE_HEX  = 1
 local NONE = "NONE"
 
 -- Get the color value of a color variable, or "NONE" as a default.
-local function get(color, index) -- {{{ †
-	if type(color) == 'table' and color[index] then
-		return color[index]
-	elseif type(color) == 'string' then
+local function get(color)
+	if type(color) == 'string' then
 		return color
 	else
 		return NONE
 	end
-end --}}} ‡
+end
 
 -- Add the 'blend' parameter to some highlight command, if there is one.
 local function blend(command, attributes) -- {{{ †
@@ -43,32 +28,21 @@ local function blend(command, attributes) -- {{{ †
 	end
 end --}}} ‡
 
---[[ If using hex and 256-bit colors, then populate the gui* and cterm* args.
-	If using 16-bit colors, just populate the cterm* args. ]]
-local colorize = using_hex_or_256 and function(command, attributes) -- {{{ †
+local function colorize(command, attributes)
 	command[#command + 1] =
-		' ctermbg='..get(attributes.bg, PALETTE_256)
-		..' ctermfg='..get(attributes.fg, PALETTE_256)
-		..' guibg='..get(attributes.bg, PALETTE_HEX)
-		..' guifg='..get(attributes.fg, PALETTE_HEX)
+		' guibg='..get(attributes.bg)
+		..' guifg='..get(attributes.fg)
 	blend(command, attributes)
-end or function(command, attributes)
-	command[#command + 1] =
-		' ctermbg='..get(attributes.bg, PALETTE_ANSI)
-		..' ctermfg='..get(attributes.fg, PALETTE_ANSI)
-	blend(command, attributes)
-end --}}} ‡
+end
 
 -- This function appends `selected_attributes` to the end of `highlight_cmd`.
-local stylize = using_hex_or_256 and function(command, style, color) -- {{{ †
-	command[#command + 1] = ' cterm='..style..' gui='..style
+local function stylize(command, style, color)
+	command[#command + 1] = ' gui='..style
 
 	if color then -- There is an undercurl color.
-		command[#command + 1] = ' guisp='..get(color, PALETTE_HEX)
+		command[#command + 1] = ' guisp='..get(color)
 	end
-end or function(command, style)
-	command[#command + 1] = ' cterm='..style
-end --}}} ‡
+end
 
 -- Generate a `:highlight` command from a group and some attributes.
 local function highlight(highlight_group, attributes) -- {{{ †
@@ -78,7 +52,7 @@ local function highlight(highlight_group, attributes) -- {{{ †
 	-- Take care of special instructions for certain background colors.
 	if attributes[vim.o.background] then
 		attributes.__index = attributes
-		attributes = setmetatable(attributes[vim.o.background], attributes)
+	attributes = setmetatable(attributes[vim.o.background], attributes)
 	end
 
 	-- Determine if there is a highlight link, and if so, assign it.
@@ -104,7 +78,7 @@ local function highlight(highlight_group, attributes) -- {{{ †
 	vim.cmd(table.concat(highlight_cmd))
 end --}}} ‡
 
-return function(Normal, highlights, terminal_ansi_colors)
+return function(Normal, highlights)
 	-- Highlight the baseline.
 	highlight('Normal', Normal)
 
@@ -112,9 +86,4 @@ return function(Normal, highlights, terminal_ansi_colors)
 	for highlight_group, attributes in pairs(highlights) do
 		highlight(highlight_group, attributes)
 	end
-
-	-- Set the terminal colors.
-	if using_hex_or_256 then for index, color in ipairs(terminal_ansi_colors) do
-		vim.g['terminal_color_'..index] = vim.o.termguicolors and color[PALETTE_HEX] or color[PALETTE_256]
-	end end
 end
